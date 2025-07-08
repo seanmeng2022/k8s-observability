@@ -44,3 +44,17 @@ Kubernetes 本身并不提供收集和存储日志的原生解决方案。它会
 Fluent Bit 是一款轻量级日志处理器和转发器，可让您从不同来源收集数据和日志，使用筛选器对其进行丰富，并将它们发送到多个目标，例如 CloudWatch、Kinesis Data Firehose、Kinesis Data Streams 和 Amazon OpenSearch Service。
 下图概述了本节的设置。Fluent Bit 将部署在 opensearch-exporter 命名空间中，并配置为将 Pod 日志转发到 OpenSearch 域。Pod 日志存储在 OpenSearch 的 eks-pod-logs 索引中。我们之前加载的 OpenSearch 仪表板用于检查 Pod 日志。
 <img width="808" alt="image" src="https://github.com/user-attachments/assets/f9d0426e-f38b-40cc-8905-d6bfd7554531" />
+
+将 Fluent Bit 部署为守护进程集，并将其配置为将 Pod 日志发送到 OpenSearch 域。基本配置可在此处获取（https://github.com/aws-samples/eks-workshop-v2/blob/stable/manifests/modules/observability/opensearch/config/fluentbit-values.yaml）。
+```
+helm repo add eks https://aws.github.io/eks-charts
+helm upgrade fluentbit eks/aws-for-fluent-bit --install \
+    --namespace opensearch-exporter --create-namespace \
+    -f ~/environment/eks-workshop/modules/observability/opensearch/config/fluentbit-values.yaml \
+    --set="opensearch.host"="$OPENSEARCH_HOST" \
+    --set="opensearch.awsRegion"=$AWS_REGION \
+    --set="opensearch.httpUser"="$OPENSEARCH_USER" \
+    --set="opensearch.httpPasswd"="$OPENSEARCH_PASSWORD" \
+    --wait
+kubectl get daemonset -n opensearch-exporter
+```
