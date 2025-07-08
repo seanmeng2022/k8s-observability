@@ -36,8 +36,8 @@ Kubernetes 日志架构定义了三个不同的级别：
 * 基础日志：使用 kubectl 获取 Pod 日志的能力（例如，kubectl logs myapp - 其中 myapp 是我集群中运行的 Pod）。
 * 节点级日志：容器引擎从应用程序的标准输出 (stdout) 和标准错误输出 (stderr) 捕获日志，并将其写入日志文件。
 * 集群级日志：基于节点级日志；每个节点上运行一个日志捕获代理。该代理收集本地文件系统上的日志，并将其发送到像 OpenSearch 这样的集中式日志目标。代理收集两种类型的日志：
-** 由节点上的容器引擎捕获的容器日志
-** 系统日志
+  * 由节点上的容器引擎捕获的容器日志
+  * 系统日志
 Kubernetes 本身并不提供收集和存储日志的原生解决方案。它会配置容器运行时，将日志以 JSON 格式保存在本地文件系统上。容器运行时（例如 Docker）会将容器的标准输出 (stdout) 和标准错误输出 (stderr) 流重定向到日志驱动程序。在 Kubernetes 中，容器日志会写入节点上的 /var/log/pods/*.log 文件。Kubelet 和容器运行时会将自己的日志写入 /var/logs 文件，如果操作系统安装了 systemd，则会写入 journald 文件。然后，像 Fluentd 这样的集群范围的日志收集系统可以在节点上跟踪这些日志文件，并将日志发送出去进行保留。这些日志收集系统通常以 DaemonSet 的形式在工作节点上运行。
 
 Fluent Bit 是一款轻量级日志处理器和转发器，可让您从不同来源收集数据和日志，使用筛选器对其进行丰富，并将它们发送到多个目标，例如 CloudWatch、Kinesis Data Firehose、Kinesis Data Streams 和 Amazon OpenSearch Service。
