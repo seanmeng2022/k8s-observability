@@ -16,6 +16,7 @@ Events:
 Kubernetes 事件会持续生成，但在集群内仅保留一小时。这个保留期与 Kubernetes 上游默认事件生存时间(TTL)60分钟一致。OpenSearch 提供了一个持久化存储，简化了这些事件的收集、分析和可视化。
 下图概述了本节的设置。kubernetes-events-exporter 将部署在 opensearch-exporter 命名空间中，用于将事件转发到 OpenSearch 域。事件存储在 OpenSearch 的 eks-kubernetes-events 索引中。我们之前加载的 OpenSearch 仪表板用于可视化这些事件。
 <img width="794" alt="image" src="https://github.com/user-attachments/assets/eb6f7bf0-f1dc-4479-9910-e719b359713e" />
+
 部署 Kubernetes 事件导出器并配置它以将事件发送到我们的 OpenSearch 域。基本配置可在此处获取(https://github.com/aws-samples/eks-workshop-v2/blob/stable/manifests/modules/observability/opensearch/config/events-exporter-values.yaml)。
 ```
 helm install events-to-opensearch \
