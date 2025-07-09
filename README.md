@@ -60,3 +60,5 @@ helm upgrade fluentbit eks/aws-for-fluent-bit --install \
     --wait
 kubectl get daemonset -n opensearch-exporter
 ```
+## Trace
+为了从 Amazon EKS 集群收集指标，我们将部署一个 OpenTelemetryCollector 自定义资源。对应的operator会照用户在 OpenTelemetryCollector 资源配置中指定的方式部署 ADOT 收集器实例。
