@@ -1,5 +1,6 @@
 # k8s-observability
-## k8s events
+## Log
+### k8s events
 Kubernetes 事件提供了丰富的信息源，可用于监控应用程序和集群状态、响应故障并执行诊断。事件通常表示某种状态变化。示例包括 Pod 创建、添加副本和调度资源。每个事件都包含一个 type 字段，该字段设置为 Normal 或 Warning 以指示成功或失败。
 如果您曾经对资源运行过 kubectl describe 命令，那么您已经使用过 Kubernetes 事件。如下所示，kubectl describe 输出的最后一部分显示了与该资源相关的 Kubernetes 事件。
 ```
@@ -31,7 +32,7 @@ helm install events-to-opensearch \
 kubectl get pods -n opensearch-exporter
 ```
 
-## Pod Logging
+### Pod Logging
 容器化应用程序应将其日志输出到 stdout 和 stderr。这在 Kubernetes 中也被认为是最佳实践，集群级日志收集系统正是基于此构建的。
 Kubernetes 日志架构定义了三个不同的级别：
 * 基础日志：使用 kubectl 获取 Pod 日志的能力（例如，kubectl logs myapp - 其中 myapp 是我集群中运行的 Pod）。
