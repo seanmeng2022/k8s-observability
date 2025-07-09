@@ -62,3 +62,60 @@ kubectl get daemonset -n opensearch-exporter
 ```
 ## Trace
 为了从 Amazon EKS 集群收集指标，我们将部署一个 OpenTelemetryCollector 自定义资源。对应的operator会照用户在 OpenTelemetryCollector 资源配置中指定的方式部署 ADOT 收集器实例。
+部署ADOT resource需有对应的权限：
+```
+ec2-user:~/environment:$ kubectl kustomize ~/environment/eks-workshop/modules/observability/oss-metrics/adot \
+  | envsubst | kubectl apply -f-
+serviceaccount/adot-collector created
+clusterrole.rbac.authorization.k8s.io/otel-prometheus-role created
+clusterrolebinding.rbac.authorization.k8s.io/otel-prometheus-role-binding created
+opentelemetrycollector.opentelemetry.io/adot created
+```
+其中，cluster role如下：
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: otel-prometheus-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - nodes/proxy
+      - services
+      - endpoints
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+
+```
+对应role权限如下：
+```
+~
+$
+aws iam list-attached-role-policies \
+  --role-name $EKS_CLUSTER_NAME-adot-collector | jq .
+{
+  "AttachedPolicies": [
+    {
+      "PolicyName": "AmazonPrometheusRemoteWriteAccess",
+      "PolicyArn": "arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"
+    }
+  ]
+}
+```
