@@ -249,3 +249,11 @@ spec:
   * 不涉及
 * 导出器
   * Prometheus 远程写入导出器，用于将指标发送到 Prometheus 远程写入端点（例如 AMP）
+
+
+确认部署情况：
+```
+ec2-user:~/environment:$ kubectl get pods -n other
+NAME                              READY   STATUS    RESTARTS   AGE
+adot-collector-5486949687-5m9wf   1/1     Running   0          9m52s
+```
